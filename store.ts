@@ -4,11 +4,15 @@ import type { TypedUseSelectorHook } from 'react-redux'
 // ...
 import brandReducer from './features/brand/brandSlice'
 import productReducer from './features/product/productSlice'
+import authReducer from './features/auth/authSlice'
+import userReducer from './features/user/userSlice'
 
 export const store = configureStore({
   reducer: {
     brand: brandReducer,
     product: productReducer,
+    auth: authReducer,
+    user: userReducer,
   },
 })
 

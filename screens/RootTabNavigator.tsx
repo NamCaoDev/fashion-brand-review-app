@@ -10,6 +10,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../configs/screen'
 import BrandScreen from './BrandScreen'
 import ProductScreen from './ProductScreen'
+import SignInScreen from './SignInScreen'
+import SignUpScreen from './SignUpScreen'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator<RootStackParamList>()
@@ -20,6 +22,16 @@ const HomeStackScreen = () => {
       <Stack.Screen component={HomeScreen} name="Home" />
       <Stack.Screen component={BrandScreen} name="Brand" />
       <Stack.Screen component={ProductScreen} name="Product" />
+    </Stack.Navigator>
+  )
+}
+
+const ProfileStackScreen = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen component={ProfileScreen} name="Profile" />
+      <Stack.Screen component={SignInScreen} name="SignIn" options={{ headerShown: false }} />
+      <Stack.Screen component={SignUpScreen} name="SignUp" options={{ headerShown: false }} />
     </Stack.Navigator>
   )
 }
@@ -52,7 +64,7 @@ export default function RootTabNavigator() {
       })}
     >
       <Tab.Screen name="Home" component={HomeStackScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Profile" component={ProfileStackScreen} />
     </Tab.Navigator>
   )
 }

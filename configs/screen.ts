@@ -9,4 +9,7 @@ export type RootStackParamList = {
   Home: {} | undefined
   Brand: Brands | undefined
   Product: Product | undefined
+  Profile: {} | undefined
+  SignIn: {} | undefined
+  SignUp: {} | undefined
 }

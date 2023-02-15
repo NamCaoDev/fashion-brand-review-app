@@ -2,13 +2,18 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { TailwindProvider } from 'tailwindcss-react-native'
 import { Provider as ReduxProvider } from 'react-redux'
-import RNBootSplash from 'react-native-bootsplash'
 
 import { store } from './store'
-import HomeScreen from './screens/HomeScreen'
-import BrandScreen from './screens/BrandScreen'
-import ProductScreen from './screens/ProductScreen'
 import RootTabNavigatorScreen from './screens/RootTabNavigator'
+// import { GoogleSignin } from '@react-native-google-signin/google-signin'
+import { Platform, UIManager } from 'react-native'
+import { enableScreens } from 'react-native-screens'
+
+// if (Platform.OS === 'android') UIManager.setLayoutAnimationEnabledExperimental?.(true)
+// enableScreens(true)
+// GoogleSignin.configure({
+//   webClientId: '183049042466-4g5fhne6ucvepedcr6focf31h1gvsmaq.apps.googleusercontent.com',
+// })
 
 export default function App() {
   const Stack = createNativeStackNavigator()
