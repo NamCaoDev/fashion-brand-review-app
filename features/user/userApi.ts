@@ -5,8 +5,8 @@ import { GetUserParams } from './types'
 const getUserAuth = async (params: GetUserParams) => {
   try {
     const { userId } = params
-    const user = await getDoc(doc(db, 'user', userId))
-    return Promise.resolve(user)
+    const user = await getDoc(doc(db, 'users', userId))
+    return Promise.resolve(user.data())
   } catch (err) {
     return Promise.reject(err)
   }

@@ -5,27 +5,44 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { getAuth } from 'firebase/auth'
 import { RootStackParamList } from 'configs/screen'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { useAppDispatch } from '../store'
+import { useAppDispatch, useAppSelector } from '../store'
 import authThunkActions from '../features/auth/authAction'
 import UserInfo from '../components/Profile/user-info'
 import MyBrand from '../components/Profile/my-brand'
+import userThunkActions from '../features/user/userAction'
+import { selectUserAuth } from '../features/user/userSlice'
+import { selectAuthData } from '../features/auth/authSlice'
 // import { GoogleSigninButton } from '@react-native-google-signin/google-signin'
 
 const ProfileScreen = () => {
   const dispatch = useAppDispatch()
+  const userAuth = useAppSelector(selectUserAuth)
+  const authData = useAppSelector(selectAuthData)
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
-  const user = getAuth()?.currentUser
+  const user = getAuth()?.currentUser || authData?.authInfo
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
     })
   }, [])
 
+  console.log('User auth', userAuth)
+
   useEffect(() => {
     if (!user) {
       navigation.navigate('SignIn')
     }
   }, [user])
+
+  useEffect(() => {
+    if (user?.uid) {
+      dispatch(
+        userThunkActions.getUserAuth({
+          userId: user?.uid,
+        }),
+      )
+    }
+  }, [dispatch, user?.uid])
 
   console.log('User authen', user)
 
@@ -41,8 +58,8 @@ const ProfileScreen = () => {
   return (
     <SafeAreaView className="flex-1">
       <View className="flex-col flex-1 px-4 py-5">
-        <UserInfo />
-        <MyBrand />
+        <UserInfo role={userAuth?.role} />
+        {userAuth?.role === 'admin' && <MyBrand />}
 
         <TouchableOpacity onPress={handleSignOut}>
           <View className="w-1/2 h-[44px] bg-red-500 rounded-lg flex items-center justify-center">

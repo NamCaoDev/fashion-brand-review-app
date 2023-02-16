@@ -6,6 +6,7 @@ import brandReducer from './features/brand/brandSlice'
 import productReducer from './features/product/productSlice'
 import authReducer from './features/auth/authSlice'
 import userReducer from './features/user/userSlice'
+import uploadReducer from './features/upload/uploadSlice'
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     product: productReducer,
     auth: authReducer,
     user: userReducer,
+    upload: uploadReducer,
   },
 })
 

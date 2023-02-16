@@ -2,8 +2,13 @@ import { View, Text, Image } from 'react-native'
 import React from 'react'
 import { getAuth } from 'firebase/auth'
 
-const UserInfo = () => {
+interface UserInfoProps {
+  role: 'admin' | 'user' | undefined
+}
+
+const UserInfo: React.FC<UserInfoProps> = ({ role }) => {
   const user = getAuth()?.currentUser
+  const isAdmin = role === 'admin'
   return (
     <View className="bg-white shadow-sm rounded-md h-[120px] mb-5 px-4 flex-row items-center">
       <View className="mr-4">
@@ -17,7 +22,7 @@ const UserInfo = () => {
         />
       </View>
       <View>
-        <Text className="text-lg font-bold mb-1">{user?.displayName || 'No Name'}</Text>
+        <Text className="text-lg font-bold mb-1">{isAdmin ? 'Admin' : user?.displayName || 'No Name'}</Text>
         <Text className="mb-1">{user?.email}</Text>
         <Text className="mb-1">{user?.phoneNumber || 'No phone number'}</Text>
         <Text className={`${user?.emailVerified ? 'text-green-500' : 'text-red-500'}`}>

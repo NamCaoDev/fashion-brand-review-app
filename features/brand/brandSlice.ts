@@ -11,6 +11,11 @@ interface BrandState {
     data: Brands[]
     error: string
   }
+  createBrand: {
+    loading: boolean
+    data: any
+    error: string
+  }
 }
 
 // Define the initial state using that type
@@ -18,6 +23,11 @@ const initialState: BrandState = {
   getBrands: {
     loading: false,
     data: [],
+    error: '',
+  },
+  createBrand: {
+    loading: false,
+    data: null,
     error: '',
   },
 }
@@ -40,6 +50,20 @@ export const brandSlice = createSlice({
     builder.addCase(brandThunkActions.getBrands.rejected, (state, action) => {
       state.getBrands.loading = false
       state.getBrands.error = action.payload?.message as string
+    })
+
+    builder.addCase(brandThunkActions.createBrand.pending, (state) => {
+      state.createBrand.loading = true
+    })
+
+    builder.addCase(brandThunkActions.createBrand.fulfilled, (state, action: PayloadAction<Brands[]>) => {
+      state.createBrand.loading = false
+      state.createBrand.data = action.payload
+    })
+
+    builder.addCase(brandThunkActions.createBrand.rejected, (state, action) => {
+      state.createBrand.loading = false
+      state.createBrand.error = action.payload?.message as string
     })
   },
 })

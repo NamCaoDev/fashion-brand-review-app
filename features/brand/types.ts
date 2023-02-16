@@ -21,4 +21,22 @@ export type Brands = {
   products?: any
 }
 
+export type CreateBrandParams = {
+  name: string
+  description: string
+  slug: string
+  establishTime?: string
+  phoneNumber: string
+  type: string
+  socials: {
+    facebook: string
+    instagram: string
+    tiktok: string
+    shopee: string
+    website: string
+  }
+  logoUrl: string
+  bannerUrl: string
+}
+
 export interface GetBrandsResponse {}

@@ -12,6 +12,7 @@ import BrandScreen from './BrandScreen'
 import ProductScreen from './ProductScreen'
 import SignInScreen from './SignInScreen'
 import SignUpScreen from './SignUpScreen'
+import CreateBrandScreen from './CreateBrandScreen'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator<RootStackParamList>()
@@ -30,8 +31,9 @@ const ProfileStackScreen = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen component={ProfileScreen} name="Profile" />
-      <Stack.Screen component={SignInScreen} name="SignIn" options={{ headerShown: false }} />
-      <Stack.Screen component={SignUpScreen} name="SignUp" options={{ headerShown: false }} />
+      <Stack.Screen component={SignInScreen} name="SignIn" options={{ headerTitle: 'Sign In' }} />
+      <Stack.Screen component={SignUpScreen} name="SignUp" options={{ headerTitle: 'Sign Up' }} />
+      <Stack.Screen component={CreateBrandScreen} name="CreateBrand" options={{ headerTitle: 'Create New Brand' }} />
     </Stack.Navigator>
   )
 }
