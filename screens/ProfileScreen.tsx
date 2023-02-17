@@ -1,6 +1,6 @@
 import { SafeAreaView, Text, View, Image, Alert } from 'react-native'
 import React, { useEffect } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useIsFocused } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { getAuth } from 'firebase/auth'
 import { RootStackParamList } from 'configs/screen'
@@ -16,6 +16,7 @@ import { selectAuthData } from '../features/auth/authSlice'
 
 const ProfileScreen = () => {
   const dispatch = useAppDispatch()
+  const isFocused = useIsFocused()
   const userAuth = useAppSelector(selectUserAuth)
   const authData = useAppSelector(selectAuthData)
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
@@ -26,25 +27,11 @@ const ProfileScreen = () => {
     })
   }, [])
 
-  console.log('User auth', userAuth)
-
   useEffect(() => {
-    if (!user) {
+    if (!user && isFocused) {
       navigation.navigate('SignIn')
     }
-  }, [user])
-
-  useEffect(() => {
-    if (user?.uid) {
-      dispatch(
-        userThunkActions.getUserAuth({
-          userId: user?.uid,
-        }),
-      )
-    }
-  }, [dispatch, user?.uid])
-
-  console.log('User authen', user)
+  }, [user, isFocused])
 
   const handleSignOut = async () => {
     const { meta, payload } = await dispatch(authThunkActions.logOut())

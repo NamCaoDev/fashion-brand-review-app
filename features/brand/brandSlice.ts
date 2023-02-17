@@ -16,6 +16,16 @@ interface BrandState {
     data: any
     error: string
   }
+  updateBrand: {
+    loading: boolean
+    data: any
+    error: string
+  }
+  deleteBrand: {
+    loading: boolean
+    data: any
+    error: string
+  }
 }
 
 // Define the initial state using that type
@@ -26,6 +36,16 @@ const initialState: BrandState = {
     error: '',
   },
   createBrand: {
+    loading: false,
+    data: null,
+    error: '',
+  },
+  updateBrand: {
+    loading: false,
+    data: null,
+    error: '',
+  },
+  deleteBrand: {
     loading: false,
     data: null,
     error: '',
@@ -64,6 +84,34 @@ export const brandSlice = createSlice({
     builder.addCase(brandThunkActions.createBrand.rejected, (state, action) => {
       state.createBrand.loading = false
       state.createBrand.error = action.payload?.message as string
+    })
+
+    builder.addCase(brandThunkActions.updateBrand.pending, (state) => {
+      state.updateBrand.loading = true
+    })
+
+    builder.addCase(brandThunkActions.updateBrand.fulfilled, (state, action: PayloadAction<Brands[]>) => {
+      state.updateBrand.loading = false
+      state.updateBrand.data = action.payload
+    })
+
+    builder.addCase(brandThunkActions.updateBrand.rejected, (state, action) => {
+      state.updateBrand.loading = false
+      state.updateBrand.error = action.payload?.message as string
+    })
+
+    builder.addCase(brandThunkActions.deleteBrand.pending, (state) => {
+      state.deleteBrand.loading = true
+    })
+
+    builder.addCase(brandThunkActions.deleteBrand.fulfilled, (state, action: PayloadAction<Brands[]>) => {
+      state.deleteBrand.loading = false
+      state.deleteBrand.data = action.payload
+    })
+
+    builder.addCase(brandThunkActions.deleteBrand.rejected, (state, action) => {
+      state.deleteBrand.loading = false
+      state.deleteBrand.error = action.payload?.message as string
     })
   },
 })

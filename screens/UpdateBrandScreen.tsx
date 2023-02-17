@@ -1,9 +1,9 @@
 import { View, Text, TextInput, Alert, StyleSheet, SafeAreaView, ScrollView, Image, Platform } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import RNPickerSelect from 'react-native-picker-select'
 import { useForm, Controller, useFieldArray } from 'react-hook-form'
-import { useNavigation } from '@react-navigation/native'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ArrowDownIcon, PlusIcon, XCircleIcon } from 'react-native-heroicons/solid'
 import DateTimePicker from '@react-native-community/datetimepicker'
@@ -12,69 +12,101 @@ import { useAppDispatch } from '../store'
 import { RootStackParamList } from 'configs/screen'
 import { socialsIconUri } from '../configs/url'
 import UploadButton from '../components/Common/upload-button'
-import { CreateBrandParams } from 'features/brand/types'
+import { Brands, CreateBrandParams } from 'features/brand/types'
 import uploadThunkActions from '../features/upload/uploadAction'
 import { convertImageUrlToBlob } from '../configs/image'
 import brandThunkActions from '../features/brand/brandAction'
 import { Timestamp } from '@firebase/firestore'
+import { cloneDeep } from 'lodash'
 
-const CreateBrandScreen = () => {
+interface UpdateBrandScreenProps {}
+
+const UpdateBrandScreen = () => {
+  const {
+    params: { name, bannerUrl, logoUrl, socials, description, establishTime, type, addresses, phoneNumber, slug, id },
+  } = useRoute<RouteProp<{ params: Brands }>>()
   const {
     control,
     watch,
     formState: { errors },
     handleSubmit,
     setValue,
-  } = useForm<CreateBrandParams>({ mode: 'onChange' })
+  } = useForm<CreateBrandParams>({
+    mode: 'onChange',
+  })
   const { fields, append, remove } = useFieldArray<any>({
     control,
     name: 'addresses',
   })
   const dispatch = useAppDispatch()
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
-  console.log(errors, 'Errors')
-  const handleCreateBrand = () => {
+  console.log('Id', id, bannerUrl, watch('bannerUrl'))
+
+  const handleUploadImages = async () => {
+    let newLogoUrl = watch('logoUrl') || ''
+    let newBannerUrl = watch('bannerUrl') || ''
+    if (watch('logoUrl') && watch('logoUrl') !== logoUrl) {
+      const logoBlob = await convertImageUrlToBlob(watch('logoUrl'))
+      const { payload } = await dispatch(
+        uploadThunkActions.uploadFileToStorage({ path: `logos/${slug}`, file: logoBlob }),
+      )
+      newLogoUrl = payload
+    }
+    if (watch('bannerUrl') && watch('bannerUrl') !== bannerUrl) {
+      const bannerBlob = await convertImageUrlToBlob(watch('bannerUrl'))
+      const { payload } = await dispatch(
+        uploadThunkActions.uploadFileToStorage({ path: `banners/${slug}`, file: bannerBlob }),
+      )
+      newBannerUrl = payload
+    }
+    return { logoUrl: newLogoUrl, bannerUrl: bannerUrl }
+  }
+  const handleUpdateBrand = () => {
     handleSubmit(async (data) => {
       console.log('Data payload', data)
-      const { name, description, establishTime, type, phoneNumber, socials, logoUrl, bannerUrl, addresses } = data
+      const { name, description, establishTime, type, phoneNumber, socials, addresses } = data
       const slug = name?.toLowerCase().replace(' ', '-')
-      const imagesBlob = await Promise.all([convertImageUrlToBlob(logoUrl), convertImageUrlToBlob(bannerUrl)])
-      const uploadParams = [
-        {
-          path: `logos/${slug}`,
-          file: imagesBlob[0],
-        },
-        {
-          path: `banners/${slug}`,
-          file: imagesBlob[1],
-        },
-      ]
-      const { meta, payload } = await dispatch(uploadThunkActions.uploadMultipleFilesToStorage(uploadParams))
+      const { logoUrl: newLogoUrl, bannerUrl: newBannerUrl } = await handleUploadImages()
+      const customParams = {
+        name,
+        description,
+        type,
+        phoneNumber,
+        socials,
+        establishTime: Timestamp.fromDate(establishTime),
+        logoUrl: newLogoUrl,
+        bannerUrl: newBannerUrl as string,
+        addresses,
+        slug,
+      }
+      const { meta, payload: payloadBrand } = await dispatch(
+        brandThunkActions.updateBrand({ id, data: cloneDeep(customParams) }),
+      )
       if (meta.requestStatus === 'fulfilled') {
-        const newLogoUrl = payload[0]
-        const newBannerUrl = payload[1]
-        const customParams = {
-          name,
-          description,
-          type,
-          phoneNumber,
-          socials,
-          establishTime: Timestamp.fromDate(establishTime),
-          logoUrl: newLogoUrl,
-          bannerUrl: newBannerUrl,
-          addresses,
-        }
-        const { meta, payload: payloadBrand } = await dispatch(brandThunkActions.createBrand({ ...customParams, slug }))
-        if (meta.requestStatus === 'fulfilled') {
-          console.log('Create brand success', payloadBrand)
-          Alert.alert('Create Brand success')
-        } else {
-          Alert.alert('Create Brand failure', payloadBrand)
-        }
+        console.log('Update brand success', payloadBrand)
+        Alert.alert('Update Brand success')
+      } else {
+        Alert.alert('Update Brand failure', payloadBrand)
       }
     })()
   }
 
+  const onSetDefaultValues = () => {
+    const establishTimeClone = cloneDeep(establishTime) as any
+    setValue('name', name)
+    setValue('description', description)
+    setValue('addresses', addresses)
+    setValue('bannerUrl', bannerUrl as string)
+    setValue('logoUrl', logoUrl)
+    setValue('phoneNumber', phoneNumber as string)
+    setValue('socials', socials)
+    setValue('establishTime', establishTimeClone?.toDate())
+    setValue('type', type)
+  }
+
+  useEffect(() => {
+    onSetDefaultValues()
+  }, [])
   return (
     <SafeAreaView>
       <ScrollView>
@@ -365,18 +397,31 @@ const CreateBrandScreen = () => {
             <Text className="mb-2">
               Logo <Text className="text-red-500">*</Text>
             </Text>
-            <UploadButton onFinish={(logoUrl) => setValue('logoUrl', logoUrl)} isAvatar={true} />
+            <UploadButton
+              onFinish={(logoUrl) => setValue('logoUrl', logoUrl)}
+              isAvatar={true}
+              placeholder={watch('logoUrl')}
+              onRemove={() => {
+                setValue('logoUrl', '')
+              }}
+            />
           </View>
 
           <View className="w-3/4 flex-col mb-5">
             <Text className="mb-2">
               Banner <Text className="text-red-500">*</Text>
             </Text>
-            <UploadButton onFinish={(bannerUrl) => setValue('bannerUrl', bannerUrl)} />
+            <UploadButton
+              onFinish={(bannerUrl) => setValue('bannerUrl', bannerUrl)}
+              placeholder={watch('bannerUrl')}
+              onRemove={() => {
+                setValue('bannerUrl', '')
+              }}
+            />
           </View>
 
           <View className="w-3/4 flex-col mt-3">
-            <TouchableOpacity onPress={handleCreateBrand}>
+            <TouchableOpacity onPress={handleUpdateBrand}>
               <View className="bg-[#00CCBB] rounded-md shadow-sm h-[42px] flex items-center justify-center">
                 <Text className="text-white font-bold">Submit</Text>
               </View>
@@ -410,4 +455,4 @@ const pickerSelectStyles = StyleSheet.create({
   },
 })
 
-export default CreateBrandScreen
+export default UpdateBrandScreen

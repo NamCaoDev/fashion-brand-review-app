@@ -17,6 +17,9 @@ const TopBrand: React.FC<TopBrandProps> = ({
   establishTime,
   bannerUrl,
   products,
+  addresses,
+  phoneNumber,
+  slug,
 }) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   return (
@@ -32,6 +35,9 @@ const TopBrand: React.FC<TopBrandProps> = ({
           type,
           bannerUrl,
           products,
+          addresses,
+          phoneNumber,
+          slug,
         })
       }
     >

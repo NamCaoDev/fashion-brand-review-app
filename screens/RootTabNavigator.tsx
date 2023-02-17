@@ -1,5 +1,5 @@
-import * as React from 'react'
-import { NavigationContainer } from '@react-navigation/native'
+import React, { useEffect } from 'react'
+import { NavigationContainer, useIsFocused } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import HomeScreen from './HomeScreen'
 import ProfileScreen from './ProfileScreen'
@@ -13,6 +13,11 @@ import ProductScreen from './ProductScreen'
 import SignInScreen from './SignInScreen'
 import SignUpScreen from './SignUpScreen'
 import CreateBrandScreen from './CreateBrandScreen'
+import UpdateBrandScreen from './UpdateBrandScreen'
+import userThunkActions from '../features/user/userAction'
+import { useAppDispatch, useAppSelector } from '../store'
+import { selectAuthData } from '../features/auth/authSlice'
+import { getAuth } from 'firebase/auth'
 
 const Tab = createBottomTabNavigator()
 const Stack = createNativeStackNavigator<RootStackParamList>()
@@ -23,6 +28,8 @@ const HomeStackScreen = () => {
       <Stack.Screen component={HomeScreen} name="Home" />
       <Stack.Screen component={BrandScreen} name="Brand" />
       <Stack.Screen component={ProductScreen} name="Product" />
+      <Stack.Screen component={CreateBrandScreen} name="CreateBrand" options={{ headerTitle: 'Create New Brand' }} />
+      <Stack.Screen component={UpdateBrandScreen} name="UpdateBrand" options={{ headerTitle: 'Update Brand' }} />
     </Stack.Navigator>
   )
 }
@@ -34,11 +41,28 @@ const ProfileStackScreen = () => {
       <Stack.Screen component={SignInScreen} name="SignIn" options={{ headerTitle: 'Sign In' }} />
       <Stack.Screen component={SignUpScreen} name="SignUp" options={{ headerTitle: 'Sign Up' }} />
       <Stack.Screen component={CreateBrandScreen} name="CreateBrand" options={{ headerTitle: 'Create New Brand' }} />
+      <Stack.Screen component={UpdateBrandScreen} name="UpdateBrand" options={{ headerTitle: 'Update Brand' }} />
     </Stack.Navigator>
   )
 }
 
 export default function RootTabNavigator() {
+  const dispatch = useAppDispatch()
+  const authData = useAppSelector(selectAuthData)
+  const user = getAuth()?.currentUser || authData?.authInfo
+  const isFocused = useIsFocused()
+  useEffect(() => {
+    if (user?.uid && isFocused) {
+      dispatch(
+        userThunkActions.getUserAuth({
+          userId: user?.uid,
+        }),
+      )
+    }
+  }, [dispatch, user?.uid, isFocused])
+
+  console.log('User', user)
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({

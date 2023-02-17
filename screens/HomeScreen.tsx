@@ -1,6 +1,6 @@
 import { View, Text, SafeAreaView, Image, FlatList, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useEffect } from 'react'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useIsFocused } from '@react-navigation/native'
 import { useAppDispatch, useAppSelector } from '../store'
 import { selectBrands } from '../features/brand/brandSlice'
 import brandThunkActions from '../features/brand/brandAction'
@@ -15,11 +15,14 @@ const HomeScreen = () => {
   const dispatch = useAppDispatch()
   const brands = useAppSelector(selectBrands)
   const products = useAppSelector(selectProducts)
+  const isFocused = useIsFocused()
 
   useEffect(() => {
-    dispatch(brandThunkActions.getBrands({}))
-    dispatch(productThunkActions.getProducts({}))
-  }, [dispatch])
+    if (isFocused) {
+      dispatch(brandThunkActions.getBrands({}))
+      dispatch(productThunkActions.getProducts({}))
+    }
+  }, [dispatch, isFocused])
 
   useEffect(() => {
     navigation.setOptions({
@@ -54,6 +57,9 @@ const HomeScreen = () => {
               type={brand?.type}
               bannerUrl={brand?.bannerUrl}
               products={brand?.products}
+              addresses={brand?.addresses}
+              phoneNumber={brand?.phoneNumber}
+              slug={brand?.slug}
             />
           ))}
         </ScrollView>

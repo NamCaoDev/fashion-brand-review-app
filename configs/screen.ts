@@ -13,4 +13,5 @@ export type RootStackParamList = {
   SignIn: {} | undefined
   SignUp: {} | undefined
   CreateBrand: {} | undefined
+  UpdateBrand: {} | undefined
 }

@@ -1,6 +1,6 @@
-import { collection, doc, getDocs, setDoc } from 'firebase/firestore'
+import { collection, doc, getDocs, setDoc, updateDoc, deleteDoc } from 'firebase/firestore'
 import { db } from '../../configs/firebase'
-import { CreateBrandParams, GetBrandsParams } from './types'
+import { CreateBrandParams, GetBrandsParams, UpdateBrandParams } from './types'
 
 const getBrands = async (params: GetBrandsParams) => {
   try {
@@ -23,9 +23,31 @@ const createBrand = async (params: CreateBrandParams) => {
   }
 }
 
+const updateBrand = async (params: UpdateBrandParams) => {
+  const { id, data } = params
+  try {
+    const brandUpdate = await updateDoc(doc(db, 'brands', id), data)
+    return Promise.resolve(brandUpdate)
+  } catch (err) {
+    return Promise.reject(err)
+  }
+}
+
+const deleteBrand = async (params: { id: string }) => {
+  const { id } = params
+  try {
+    const brandUpdate = await deleteDoc(doc(db, 'brands', id))
+    return Promise.resolve(brandUpdate)
+  } catch (err) {
+    return Promise.reject(err)
+  }
+}
+
 const brandAPI = {
   getBrands,
   createBrand,
+  updateBrand,
+  deleteBrand,
 }
 
 export default brandAPI
