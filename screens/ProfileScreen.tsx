@@ -1,4 +1,4 @@
-import { SafeAreaView, Text, View, Image, Alert } from 'react-native'
+import { SafeAreaView, Text, View, Image, Alert, Pressable, Platform } from 'react-native'
 import React, { useEffect } from 'react'
 import { useNavigation, useIsFocused } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -21,11 +21,6 @@ const ProfileScreen = () => {
   const authData = useAppSelector(selectAuthData)
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   const user = getAuth()?.currentUser || authData?.authInfo
-  useEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    })
-  }, [])
 
   useEffect(() => {
     if (!user && isFocused) {
@@ -44,15 +39,15 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaView className="flex-1">
-      <View className="flex-col flex-1 px-4 py-5">
+      <View className={`flex-col flex-1 px-4 py-5`}>
         <UserInfo role={userAuth?.role} />
         {userAuth?.role === 'admin' && <MyBrand />}
 
-        <TouchableOpacity onPress={handleSignOut}>
+        <Pressable onPress={handleSignOut}>
           <View className="w-1/2 h-[44px] bg-red-500 rounded-lg flex items-center justify-center">
             <Text className="text-white font-bold">Sign Out</Text>
           </View>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </SafeAreaView>
   )

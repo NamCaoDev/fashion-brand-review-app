@@ -34,7 +34,6 @@ const HomeScreen = () => {
       ),
     })
   }, [])
-  console.log('product', products)
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="px-4 py-5 w-full">
@@ -70,6 +69,7 @@ const HomeScreen = () => {
           </TouchableOpacity>
         </View>
         <FlatList
+          scrollEnabled
           data={products}
           renderItem={({ item }) => (
             <TopProduct

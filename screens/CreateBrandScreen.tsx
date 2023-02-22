@@ -1,5 +1,16 @@
-import { View, Text, TextInput, Alert, StyleSheet, SafeAreaView, ScrollView, Image, Platform } from 'react-native'
-import React from 'react'
+import {
+  View,
+  Text,
+  TextInput,
+  Alert,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  Image,
+  Platform,
+  Pressable,
+} from 'react-native'
+import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import RNPickerSelect from 'react-native-picker-select'
 import { useForm, Controller, useFieldArray } from 'react-hook-form'
@@ -7,6 +18,7 @@ import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ArrowDownIcon, PlusIcon, XCircleIcon } from 'react-native-heroicons/solid'
 import DateTimePicker from '@react-native-community/datetimepicker'
+import moment from 'moment'
 
 import { useAppDispatch } from '../store'
 import { RootStackParamList } from 'configs/screen'
@@ -17,22 +29,27 @@ import uploadThunkActions from '../features/upload/uploadAction'
 import { convertImageUrlToBlob } from '../configs/image'
 import brandThunkActions from '../features/brand/brandAction'
 import { Timestamp } from '@firebase/firestore'
+import useInputs from '../hooks/useInputs'
+import { createBrandInputs } from '../configs/inputs'
+import { cloneDeep } from 'lodash'
 
 const CreateBrandScreen = () => {
+  const form = useForm<CreateBrandParams>({ mode: 'onChange' })
   const {
     control,
     watch,
     formState: { errors },
     handleSubmit,
     setValue,
-  } = useForm<CreateBrandParams>({ mode: 'onChange' })
+  } = form
   const { fields, append, remove } = useFieldArray<any>({
     control,
     name: 'addresses',
   })
+  const { renderInputs } = useInputs({ form })
   const dispatch = useAppDispatch()
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
-  console.log(errors, 'Errors')
+  const [showDatePopup, setShowDatePopup] = useState(false)
   const handleCreateBrand = () => {
     handleSubmit(async (data) => {
       console.log('Data payload', data)
@@ -79,7 +96,8 @@ const CreateBrandScreen = () => {
     <SafeAreaView>
       <ScrollView>
         <View className="w-full flex-col items-center py-6 mt-3">
-          <View className="flex-col w-3/4 mb-4">
+          {renderInputs(cloneDeep(createBrandInputs))}
+          {/* <View className="flex-col w-3/4 mb-4">
             <Text className="mb-2">
               Name <Text className="text-red-500">*</Text>
             </Text>
@@ -129,16 +147,53 @@ const CreateBrandScreen = () => {
             </Text>
             <Controller
               control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <DateTimePicker
-                  value={value || new Date()}
-                  onChange={(e, date) => onChange(date)}
-                  mode="date"
-                  positiveButton={{ label: 'OK', textColor: '#00CCBB' }}
-                  style={{ flex: 1, justifyContent: 'flex-start' }}
-                  display="default"
-                />
-              )}
+              render={({ field: { onChange, onBlur, value } }) => {
+                if (Platform.OS === 'android') {
+                  return (
+                    <View className="flex-col">
+                      <Pressable
+                        className="p-3 w-[200px] bg-[#00CCBB] rounded-md flex justify-center items-center"
+                        onPress={() => {
+                          setShowDatePopup(true)
+                        }}
+                      >
+                        <Text className="text-white font-bold">Choose date</Text>
+                      </Pressable>
+                      {watch('establishTime') && (
+                        <Text className="py-2 font-bold">
+                          Date: {moment(watch('establishTime')).format('DD-MM-YYYY')}
+                        </Text>
+                      )}
+                      {showDatePopup && (
+                        <DateTimePicker
+                          value={value || new Date()}
+                          onChange={(e, date) => {
+                            setShowDatePopup(false)
+                            onChange(date)
+                          }}
+                          mode="date"
+                          positiveButton={{ label: 'OK', textColor: '#00CCBB' }}
+                          style={{ flex: 1, justifyContent: 'flex-start' }}
+                          display="default"
+                        />
+                      )}
+                    </View>
+                  )
+                }
+                return (
+                  <DateTimePicker
+                    value={value || new Date()}
+                    onChange={(e, date) => {
+                      setShowDatePopup(false)
+                      onChange(date)
+                    }}
+                    mode="date"
+                    positiveButton={{ label: 'OK', textColor: '#00CCBB' }}
+                    style={{ flex: 1, justifyContent: 'flex-start' }}
+                    display="default"
+                  />
+                )
+              }}
               name="establishTime"
               rules={{ required: 'Please input your estimate time' }}
             />
@@ -368,6 +423,8 @@ const CreateBrandScreen = () => {
             <UploadButton onFinish={(logoUrl) => setValue('logoUrl', logoUrl)} isAvatar={true} />
           </View>
 
+          {!watch('logoUrl') && <Text className="mt-2 ml-2 text-red-500">Please choose a image</Text>}
+
           <View className="w-3/4 flex-col mb-5">
             <Text className="mb-2">
               Banner <Text className="text-red-500">*</Text>
@@ -375,12 +432,14 @@ const CreateBrandScreen = () => {
             <UploadButton onFinish={(bannerUrl) => setValue('bannerUrl', bannerUrl)} />
           </View>
 
+          {!watch('bannerUrl') && <Text className="mt-2 ml-2 text-red-500">Please choose a image</Text>} */}
+
           <View className="w-3/4 flex-col mt-3">
-            <TouchableOpacity onPress={handleCreateBrand}>
+            <Pressable onPress={handleCreateBrand}>
               <View className="bg-[#00CCBB] rounded-md shadow-sm h-[42px] flex items-center justify-center">
                 <Text className="text-white font-bold">Submit</Text>
               </View>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
       </ScrollView>
@@ -400,12 +459,11 @@ const pickerSelectStyles = StyleSheet.create({
   },
   inputAndroid: {
     fontSize: 16,
+    paddingVertical: 12,
     paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: 'purple',
     borderRadius: 8,
     color: 'black',
+    backgroundColor: 'white',
     paddingRight: 30, // to ensure the text is never behind the icon
   },
 })

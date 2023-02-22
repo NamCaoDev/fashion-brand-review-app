@@ -3,6 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../../store'
 import productThunkActions from './productAction'
 import { Product } from './types'
+import { cloneDeep } from 'lodash'
 
 // Define a type for the slice state
 interface ProductState {

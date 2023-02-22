@@ -18,6 +18,7 @@ const AllProduct: React.FC<AllProductProps> = ({ products }) => {
       <Text className="font-bold text-md mb-4">Tất cả sản phẩm</Text>
       <FlatList
         data={products}
+        scrollEnabled
         numColumns={2}
         horizontal={false}
         keyExtractor={(item) => item.id}

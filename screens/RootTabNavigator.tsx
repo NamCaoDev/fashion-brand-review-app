@@ -37,7 +37,7 @@ const HomeStackScreen = () => {
 const ProfileStackScreen = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen component={ProfileScreen} name="Profile" />
+      <Stack.Screen component={ProfileScreen} name="Profile" options={{ headerTitle: 'Your Profile' }} />
       <Stack.Screen component={SignInScreen} name="SignIn" options={{ headerTitle: 'Sign In' }} />
       <Stack.Screen component={SignUpScreen} name="SignUp" options={{ headerTitle: 'Sign Up' }} />
       <Stack.Screen component={CreateBrandScreen} name="CreateBrand" options={{ headerTitle: 'Create New Brand' }} />
@@ -70,16 +70,16 @@ export default function RootTabNavigator() {
         tabBarIcon: ({ color, focused }) => {
           let icon
 
-          if (route.name === 'Home') {
+          if (route.name === 'HomeTab') {
             icon = focused ? <HomeIcon color={color} /> : <HomeOutlinedIcon color={color} />
-          } else if (route.name === 'Profile') {
+          } else if (route.name === 'ProfileTab') {
             icon = focused ? <UserIcon color={color} /> : <UserOutlinedIcon color={color} />
           }
           return icon
         },
         tabBarLabel: ({ color }) => <Text>{route.name}</Text>,
         tabBarStyle: {
-          // height: Platform.OS === 'android' ? TAB_BAR_HEIGHT - 15 : undefined,
+          height: 80,
           paddingTop: 5,
           paddingBottom: 5,
           borderTopWidth: 1,
@@ -89,8 +89,8 @@ export default function RootTabNavigator() {
         tabBarInactiveTintColor: '#00CCBB',
       })}
     >
-      <Tab.Screen name="Home" component={HomeStackScreen} />
-      <Tab.Screen name="Profile" component={ProfileStackScreen} />
+      <Tab.Screen name="HomeTab" component={HomeStackScreen} />
+      <Tab.Screen name="ProfileTab" component={ProfileStackScreen} />
     </Tab.Navigator>
   )
 }

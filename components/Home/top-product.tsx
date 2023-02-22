@@ -37,7 +37,6 @@ const TopProduct: React.FC<TopProductProps> = ({
   useEffect(() => {
     fetchBrand()
   }, [])
-
   const cloneBrandData = { ...brandData } as Brands
   return (
     <TouchableOpacity
