@@ -1,14 +1,14 @@
-import { View, Text, TextInput, StyleSheet, Platform, Pressable, TouchableOpacity, Image } from 'react-native'
-import React, { cloneElement, isValidElement, useCallback, useMemo, useState } from 'react'
-import { UseFormReturn, Controller, useFieldArray, FieldValues } from 'react-hook-form'
+import { View, Text, TextInput, StyleSheet, Platform, Pressable, Image } from 'react-native'
+import React, { useCallback, useState } from 'react'
+import { UseFormReturn, Controller } from 'react-hook-form'
 import RNPickerSelect from 'react-native-picker-select'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import moment from 'moment'
 
 import { InputParams, InputType, SelectOptions } from '../models/input'
+import FormList from '../components/Common/form-list'
 import { cloneDeep } from 'lodash'
 import UploadButton from '../components/Common/upload-button'
-import { PlusIcon, XCircleIcon } from 'react-native-heroicons/solid'
 
 interface UseInputsProps {
   form: UseFormReturn<any>
@@ -30,10 +30,6 @@ const useInputs = ({ form }: UseInputsProps) => {
     getValues,
     formState: { errors },
   } = form
-  const { fields, append, remove } = useFieldArray<any>({
-    control,
-    name: 'addresses',
-  })
   const [showDatePopup, setShowDatePopup] = useState(false)
   const renderError = (error: string) => {
     if (error) {
@@ -135,7 +131,7 @@ const useInputs = ({ form }: UseInputsProps) => {
                   }
                   return (
                     <DateTimePicker
-                      value={value || new Date()}
+                      value={value || getValues(name) || new Date()}
                       onChange={(e, date) => {
                         setShowDatePopup(false)
                         onChange(date)
@@ -155,45 +151,14 @@ const useInputs = ({ form }: UseInputsProps) => {
               <UploadButton
                 onFinish={(imageUrl) => setValue(name, imageUrl)}
                 isAvatar={Boolean(uploadOptions?.isAvatar)}
+                placeholder={uploadOptions?.defaultImageSrc}
+                onRemove={() => setValue(name, null)}
               />
             )}
             {isInputGroup && renderInputs({ inputs: cloneDeep(groups) as InputParams[], level: 1 })}
             {isInputList && (
               <>
-                {fields?.map((field, index) => (
-                  <Controller
-                    key={index}
-                    control={control}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                      <View className="relative">
-                        <TextInput
-                          autoCapitalize="none"
-                          placeholder={placeholder}
-                          className="h-[46px] bg-white rounded-md shadow-sm px-3 mb-3"
-                          onChangeText={(value) => onChange(value)}
-                          onBlur={onBlur}
-                          value={getValues(`${name}.${index}`)}
-                        />
-                        <View className="absolute z-10 top-3 right-3">
-                          <TouchableOpacity
-                            onPress={() => {
-                              remove(index)
-                            }}
-                          >
-                            <XCircleIcon size={23} />
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-                    )}
-                    name={`${name}.${index}`}
-                  />
-                ))}
-                <TouchableOpacity onPress={() => append('')}>
-                  <View className="h-[40px] w-full mt-2 rounded-md border border-gray-700 border-dashed flex-row items-center justify-center">
-                    <PlusIcon size={20} color="#00CCBB" />
-                    <Text className="text-gray-700 ml-2">Add new {label}</Text>
-                  </View>
-                </TouchableOpacity>
+                <FormList form={form} name={name} label={label as string} />
               </>
             )}
             {renderError(errors[name]?.message as string)}
