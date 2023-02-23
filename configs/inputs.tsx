@@ -57,16 +57,14 @@ export const createBrandInputs: InputParams[] = [
     groups: [
       {
         name: 'socials.facebook',
-        icon: <Image source={{ uri: socialsIconUri?.facebook }} style={{ width: 20, height: 20, borderRadius: 100 }} />,
+        iconUrl: socialsIconUri?.facebook,
         type: InputType.Text,
         required: true,
         placeholder: 'Enter brand facebook url',
       },
       {
         name: 'socials.instagram',
-        icon: (
-          <Image source={{ uri: socialsIconUri?.instagram }} style={{ width: 20, height: 20, borderRadius: 100 }} />
-        ),
+        iconUrl: socialsIconUri?.instagram,
         type: InputType.Text,
         required: true,
         placeholder: 'Enter brand instagram url',
@@ -74,21 +72,21 @@ export const createBrandInputs: InputParams[] = [
       {
         name: 'socials.tiktok',
         type: InputType.Text,
-        icon: <Image source={{ uri: socialsIconUri?.tiktok }} style={{ width: 20, height: 20, borderRadius: 100 }} />,
+        iconUrl: socialsIconUri?.tiktok,
         required: true,
         placeholder: 'Enter brand tiktok url',
       },
       {
         name: 'socials.shopee',
         type: InputType.Text,
-        icon: <Image source={{ uri: socialsIconUri?.shopee }} style={{ width: 20, height: 20, borderRadius: 100 }} />,
+        iconUrl: socialsIconUri?.shopee,
         required: true,
         placeholder: 'Enter brand shopee url',
       },
       {
         name: 'socials.website',
         type: InputType.Text,
-        icon: <Image source={{ uri: socialsIconUri?.website }} style={{ width: 20, height: 20, borderRadius: 100 }} />,
+        iconUrl: socialsIconUri?.website,
         required: true,
         placeholder: 'Enter brand website url',
       },

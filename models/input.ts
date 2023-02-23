@@ -23,7 +23,7 @@ export interface InputGroup {
 export interface InputParams {
   name: string
   type: InputType
-  icon?: React.ReactNode
+  iconUrl?: string
   label?: string
   required: boolean
   placeholder?: string

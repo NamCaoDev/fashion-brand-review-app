@@ -94,9 +94,9 @@ const CreateBrandScreen = () => {
 
   return (
     <SafeAreaView>
-      <ScrollView>
+      <ScrollView scrollEnabled>
         <View className="w-full flex-col items-center py-6 mt-3">
-          {renderInputs(cloneDeep(createBrandInputs))}
+          {renderInputs({ inputs: cloneDeep(createBrandInputs), level: 0 })}
           {/* <View className="flex-col w-3/4 mb-4">
             <Text className="mb-2">
               Name <Text className="text-red-500">*</Text>
