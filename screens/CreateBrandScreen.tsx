@@ -1,8 +1,8 @@
-import { View, Text, Alert, SafeAreaView, ScrollView, Pressable } from 'react-native'
+import { View, Alert, SafeAreaView, ScrollView } from 'react-native'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 
-import { useAppDispatch } from '../store'
+import { useAppDispatch, useAppSelector } from '../store'
 import { CreateBrandParams } from 'features/brand/types'
 import uploadThunkActions from '../features/upload/uploadAction'
 import { convertImageUrlToBlob } from '../configs/image'
@@ -11,15 +11,16 @@ import { Timestamp } from '@firebase/firestore'
 import useInputs from '../hooks/useInputs'
 import { createBrandInputs } from '../configs/inputs'
 import { cloneDeep } from 'lodash'
+import LoadingButton from '../components/Common/loading-button'
+import { selectCreateBrandLoading } from '../features/brand/brandSlice'
 
 const CreateBrandScreen = () => {
   const form = useForm<CreateBrandParams>({ mode: 'onChange' })
-  const {
-    formState: { errors },
-    handleSubmit,
-  } = form
+  const { handleSubmit } = form
   const { renderInputs } = useInputs({ form })
   const dispatch = useAppDispatch()
+  const isLoadingCreateBrand = useAppSelector(selectCreateBrandLoading)
+  const disabledButton = isLoadingCreateBrand
   const handleCreateBrand = () => {
     handleSubmit(async (data) => {
       console.log('Data payload', data)
@@ -69,11 +70,7 @@ const CreateBrandScreen = () => {
           {renderInputs({ inputs: cloneDeep(createBrandInputs), level: 0 })}
 
           <View className="w-3/4 flex-col mt-3">
-            <Pressable onPress={handleCreateBrand}>
-              <View className="bg-[#00CCBB] rounded-md shadow-sm h-[42px] flex items-center justify-center">
-                <Text className="text-white font-bold">Submit</Text>
-              </View>
-            </Pressable>
+            <LoadingButton onSubmit={handleCreateBrand} disabled={disabledButton} loading={isLoadingCreateBrand} />
           </View>
         </View>
       </ScrollView>

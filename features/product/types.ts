@@ -15,4 +15,19 @@ export type Product = {
   rating?: number
 }
 
+export type CreateProductParams = {
+  name: string
+  colors: string[]
+  details: string[]
+  material: string[]
+  form: string
+  price: number
+  slug: string
+  technology?: string
+  type: string
+  brand?: any
+  status?: string
+  images: string[]
+}
+
 export interface GetProductsParams {}

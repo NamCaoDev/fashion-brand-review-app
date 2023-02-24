@@ -45,6 +45,7 @@ const useInputs = ({ form }: UseInputsProps) => {
         const { name, type, label, placeholder, required, selectOptions, groups, uploadOptions, iconUrl } = input
         const isTextInput = type === InputType.Text
         const isEmailInput = type === InputType.Email
+        const isNumberInput = type === InputType.Number
         const isPasswordInput = type === InputType.Password
         const isTextAreaInput = type === InputType.TextArea
         const isSelect = type === InputType.Select
@@ -59,7 +60,7 @@ const useInputs = ({ form }: UseInputsProps) => {
                 {label} {required && <Text className="text-red-500">*</Text>}
               </Text>
             )}
-            {(isTextInput || isPasswordInput || isEmailInput || isTextAreaInput) && (
+            {(isTextInput || isPasswordInput || isEmailInput || isTextAreaInput || isNumberInput) && (
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -153,6 +154,7 @@ const useInputs = ({ form }: UseInputsProps) => {
                 isAvatar={Boolean(uploadOptions?.isAvatar)}
                 placeholder={uploadOptions?.defaultImageSrc}
                 onRemove={() => setValue(name, null)}
+                multiple={uploadOptions?.multiple}
               />
             )}
             {isInputGroup && renderInputs({ inputs: cloneDeep(groups) as InputParams[], level: 1 })}

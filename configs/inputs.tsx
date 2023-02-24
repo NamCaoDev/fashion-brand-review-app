@@ -1,5 +1,4 @@
 import React from 'react'
-import { Image } from 'react-native'
 import { InputParams, InputType } from '../models/input'
 import { socialsIconUri } from './url'
 
@@ -115,5 +114,99 @@ export const createBrandInputs: InputParams[] = [
     label: 'Banner',
     required: true,
     placeholder: 'Enter brand addresses',
+  },
+]
+
+export const createProductInputs: InputParams[] = [
+  {
+    name: 'name',
+    type: InputType.Text,
+    label: 'Name',
+    required: true,
+    placeholder: 'Enter product name',
+  },
+  {
+    name: 'price',
+    type: InputType.Number,
+    label: 'Price',
+    required: true,
+    placeholder: 'Enter price',
+  },
+  {
+    name: 'type',
+    type: InputType.Text,
+    label: 'Product type',
+    required: true,
+    placeholder: 'Enter type of product',
+  },
+  {
+    name: 'technology',
+    type: InputType.Text,
+    label: 'Technology',
+    required: true,
+    placeholder: 'Enter product technology',
+  },
+  {
+    name: 'status',
+    type: InputType.Select,
+    label: 'Status',
+    required: true,
+    placeholder: 'Enter status',
+    selectOptions: [
+      {
+        label: 'Stocking',
+        value: 'stocking',
+      },
+      {
+        label: 'Out of stock',
+        value: 'out-of-stock',
+      },
+    ],
+  },
+  {
+    name: 'colors',
+    type: InputType.InputList,
+    label: 'Colors',
+    required: true,
+    placeholder: 'Enter product color',
+  },
+  {
+    name: 'details',
+    type: InputType.InputList,
+    label: 'Details',
+    required: true,
+    placeholder: 'Enter product detail',
+  },
+  {
+    name: 'material',
+    type: InputType.InputList,
+    label: 'Material',
+    required: true,
+    placeholder: 'Enter product material',
+  },
+  {
+    name: 'form',
+    type: InputType.Text,
+    label: 'Form',
+    required: true,
+    placeholder: 'Enter product form',
+  },
+  {
+    name: 'brand',
+    type: InputType.Select,
+    label: 'Brand',
+    required: true,
+    placeholder: 'Select brand',
+    selectOptions: [],
+  },
+  {
+    name: 'images',
+    type: InputType.Upload,
+    label: 'Images',
+    required: true,
+    placeholder: 'Enter product images',
+    uploadOptions: {
+      multiple: true,
+    },
   },
 ]

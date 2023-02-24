@@ -2,8 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../../store'
 import brandThunkActions from './brandAction'
-import { Brands, GetBrandsResponse } from './types'
-import { cloneDeep } from 'lodash'
+import { Brands } from './types'
 
 // Define a type for the slice state
 interface BrandState {
@@ -121,5 +120,7 @@ export const brandAction = brandSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectBrands = (state: RootState) => state.brand.getBrands.data
+export const selectCreateBrandLoading = (state: RootState) => state.brand.createBrand.loading
+export const selectUpdateBrandLoading = (state: RootState) => state.brand.updateBrand.loading
 
 export default brandSlice.reducer

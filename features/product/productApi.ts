@@ -1,6 +1,6 @@
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore'
+import { collection, getDocs, doc, getDoc, setDoc } from 'firebase/firestore'
 import { db } from '../../configs/firebase'
-import { GetProductsParams } from './types'
+import { CreateProductParams, GetProductsParams } from './types'
 
 const getProducts = async (params: GetProductsParams) => {
   try {
@@ -12,8 +12,20 @@ const getProducts = async (params: GetProductsParams) => {
   }
 }
 
+const createProduct = async (params: CreateProductParams) => {
+  try {
+    const newProduct = await setDoc(doc(db, 'products', params.slug), {
+      ...params,
+    })
+    return Promise.resolve(newProduct)
+  } catch (err) {
+    return Promise.reject(err)
+  }
+}
+
 const productAPI = {
   getProducts,
+  createProduct,
 }
 
 export default productAPI

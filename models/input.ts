@@ -32,5 +32,6 @@ export interface InputParams {
   uploadOptions?: {
     isAvatar?: boolean
     defaultImageSrc?: string
+    multiple?: boolean
   }
 }

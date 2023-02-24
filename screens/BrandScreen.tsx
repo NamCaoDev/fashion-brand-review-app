@@ -117,7 +117,7 @@ const BrandScreen = () => {
           </View>
           <Text className="py-4 text-gray-700">{description}</Text>
           <DetailsBrand />
-          <AllProduct products={productsData} />
+          <AllProduct products={productsData} isAdminUser />
         </View>
         <DeleteBrandModal brandId={id} visible={showDeleteModal} onClose={() => setShowDeleteModal(false)} />
       </ScrollView>

@@ -1,21 +1,29 @@
-import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native'
+import { View, Text, FlatList, Image, TouchableOpacity, Pressable } from 'react-native'
 import React from 'react'
 import Currency from 'react-currency-formatter'
 import { useNavigation } from '@react-navigation/native'
-import { StarIcon } from 'react-native-heroicons/solid'
+import { PlusCircleIcon, PlusIcon, StarIcon } from 'react-native-heroicons/solid'
 import { Product } from 'features/product/types'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../configs/screen'
 
 interface AllProductProps {
   products: Product[]
+  isAdminUser: boolean
 }
 
-const AllProduct: React.FC<AllProductProps> = ({ products }) => {
+const AllProduct: React.FC<AllProductProps> = ({ products, isAdminUser }) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   return (
     <View className="py-3">
-      <Text className="font-bold text-md mb-4">Tất cả sản phẩm</Text>
+      <View className="flex-row items-center mb-4">
+        <Text className="font-bold text-md mr-3">Tất cả sản phẩm</Text>
+        {isAdminUser && (
+          <Pressable onPress={() => navigation.navigate('CreateProduct')}>
+            <PlusCircleIcon color="#00CCBB" size={30} />
+          </Pressable>
+        )}
+      </View>
       <FlatList
         data={products}
         scrollEnabled

@@ -1,17 +1,11 @@
-import { View, Text, TextInput, Alert, StyleSheet, SafeAreaView, ScrollView, Image, Platform } from 'react-native'
+import { View, Text, Alert, StyleSheet, SafeAreaView, ScrollView, Pressable } from 'react-native'
 import React, { useEffect } from 'react'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import RNPickerSelect from 'react-native-picker-select'
-import { useForm, Controller, useFieldArray } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { ArrowDownIcon, PlusIcon, XCircleIcon } from 'react-native-heroicons/solid'
-import DateTimePicker from '@react-native-community/datetimepicker'
 
-import { useAppDispatch } from '../store'
+import { useAppDispatch, useAppSelector } from '../store'
 import { RootStackParamList } from 'configs/screen'
-import { socialsIconUri } from '../configs/url'
-import UploadButton from '../components/Common/upload-button'
 import { Brands, CreateBrandParams } from 'features/brand/types'
 import uploadThunkActions from '../features/upload/uploadAction'
 import { convertImageUrlToBlob } from '../configs/image'
@@ -20,6 +14,8 @@ import { Timestamp } from '@firebase/firestore'
 import { cloneDeep } from 'lodash'
 import useInputs from '../hooks/useInputs'
 import { createBrandInputs } from '../configs/inputs'
+import { selectUpdateBrandLoading } from '../features/brand/brandSlice'
+import LoadingButton from '../components/Common/loading-button'
 
 interface UpdateBrandScreenProps {}
 
@@ -30,21 +26,13 @@ const UpdateBrandScreen: React.FC<UpdateBrandScreenProps> = () => {
   const form = useForm<CreateBrandParams>({
     mode: 'onChange',
   })
-  const {
-    control,
-    watch,
-    formState: { errors },
-    handleSubmit,
-    setValue,
-    getValues,
-  } = form
-  const { fields, append, remove } = useFieldArray<any>({
-    control,
-    name: 'addresses',
-  })
+  const { watch, handleSubmit, setValue, getValues } = form
   const { renderInputs } = useInputs({ form })
   const dispatch = useAppDispatch()
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
+  const isLoadingUpdateBrand = useAppSelector(selectUpdateBrandLoading)
+  const disabledButton = isLoadingUpdateBrand || !watch('name')
+  console.log('Disblaed button', disabledButton)
   const updateBrandInputs = createBrandInputs?.map((input) => {
     if (['logoUrl', 'bannerUrl']?.includes(input.name)) {
       return {
@@ -101,6 +89,7 @@ const UpdateBrandScreen: React.FC<UpdateBrandScreenProps> = () => {
       if (meta.requestStatus === 'fulfilled') {
         console.log('Update brand success', payloadBrand)
         Alert.alert('Update Brand success')
+        dispatch(brandThunkActions.getBrands({}))
       } else {
         Alert.alert('Update Brand failure', payloadBrand)
       }
@@ -129,11 +118,7 @@ const UpdateBrandScreen: React.FC<UpdateBrandScreenProps> = () => {
         <View className="w-full flex-col items-center py-6 mt-3">
           {renderInputs({ inputs: updateBrandInputs })}
           <View className="w-3/4 flex-col mt-3">
-            <TouchableOpacity onPress={handleUpdateBrand}>
-              <View className="bg-[#00CCBB] rounded-md shadow-sm h-[42px] flex items-center justify-center">
-                <Text className="text-white font-bold">Submit</Text>
-              </View>
-            </TouchableOpacity>
+            <LoadingButton onSubmit={handleUpdateBrand} disabled={disabledButton} loading={isLoadingUpdateBrand} />
           </View>
         </View>
       </ScrollView>

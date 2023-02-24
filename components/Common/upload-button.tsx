@@ -1,17 +1,44 @@
-import { View, Text, TouchableOpacity, Image } from 'react-native'
+import { View, Text, TouchableOpacity, Image, Pressable, StyleSheet, Modal, FlatList } from 'react-native'
 import React, { useState } from 'react'
+import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker'
+import { ImagePicker as ImagePickerMultiple, Asset } from 'expo-image-multiple-picker'
 import { ArrowUpOnSquareIcon, XCircleIcon } from 'react-native-heroicons/solid'
 
 interface UploadButtonProps {
   back?: boolean
-  onFinish?: (asset: string) => void
+  onFinish?: (asset: string | string[]) => void
   onRemove?: () => void
   placeholder?: string
   isAvatar?: boolean
+  multiple?: boolean
 }
 
-const UploadButton: React.FC<UploadButtonProps> = ({ back, onFinish, onRemove, placeholder, isAvatar }) => {
+const ImagePickerContainer = ({
+  onClosePicker,
+  onSavePicker,
+}: {
+  onClosePicker: () => void
+  onSavePicker: (assets: Asset[]) => void
+}) => {
+  return (
+    <View style={styles.imagePickerContainer}>
+      <ImagePickerMultiple
+        onSave={(assets) => {
+          console.log('list assets', assets)
+          onSavePicker(assets)
+          onClosePicker()
+        }}
+        onCancel={() => console.log('no permissions or user go back')}
+        multiple
+        limit={5}
+      />
+    </View>
+  )
+}
+
+const UploadButton: React.FC<UploadButtonProps> = ({ back, onFinish, onRemove, placeholder, isAvatar, multiple }) => {
+  const [openMultiple, setOpenMultiple] = useState(false)
   const [assets, setAssets] = useState<ImagePicker.ImagePickerAsset[]>(
     placeholder ? [{ uri: placeholder, width: 200, height: 200 }] : [],
   )
@@ -21,6 +48,7 @@ const UploadButton: React.FC<UploadButtonProps> = ({ back, onFinish, onRemove, p
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      allowsMultipleSelection: true,
     })
     console.log('Result image', result)
     if (result.assets && !result.canceled) {
@@ -31,6 +59,75 @@ const UploadButton: React.FC<UploadButtonProps> = ({ back, onFinish, onRemove, p
 
   const heightImage = isAvatar ? 150 : 200
   const widthImage = isAvatar ? 200 : 200
+
+  if (multiple) {
+    return (
+      <>
+        {assets?.length || placeholder ? (
+          <View>
+            <View className="flex-row justify-end mb-4">
+              <Pressable
+                className="bg-[#00CCBB] w-[150px] h-[40px] rounded-md flex-row items-center justify-center"
+                onPress={() => {
+                  setAssets([])
+                  onRemove?.()
+                }}
+              >
+                <Text className="text-white text-center">Remove all images</Text>
+              </Pressable>
+            </View>
+
+            <FlatList
+              data={assets}
+              scrollEnabled
+              numColumns={2}
+              horizontal={false}
+              keyExtractor={(item) => item.assetId as string}
+              renderItem={({ item }) => (
+                <Image
+                  style={{ width: 150, height: 150, maxWidth: '100%' }}
+                  source={{ uri: item.uri || placeholder }}
+                  resizeMode="cover"
+                  className={isAvatar ? 'rounded-full mr-2 mb-3 shadow-sm' : 'rounded-md mr-2 mb-3 shadow-sm'}
+                />
+              )}
+            ></FlatList>
+
+            {/* {assets?.map((asset) => (
+              <View className="flex-row">
+                <Image
+                  style={{ width: 150, height: 150, maxWidth: '100%' }}
+                  source={{ uri: asset.uri || placeholder }}
+                  resizeMode="cover"
+                  className={isAvatar ? 'rounded-full mr-2 mb-2 shadow-sm' : 'rounded-md mr-2 mb-2 shadow-sm'}
+                />
+              </View>
+            ))} */}
+          </View>
+        ) : (
+          <Pressable
+            className="h-[120px] bg-white flex-col items-center justify-center rounded-md"
+            onPress={() => setOpenMultiple(true)}
+          >
+            <ArrowUpOnSquareIcon size={40} color="#00CCBB" />
+            <Text className={`font-bold ${isAvatar ? 'text-md' : 'text-lg'} mt-3`}>Upload image</Text>
+          </Pressable>
+        )}
+        {
+          <Modal visible={openMultiple} onRequestClose={() => setOpenMultiple(false)}>
+            <ImagePickerContainer
+              onClosePicker={() => setOpenMultiple(false)}
+              onSavePicker={(assets: Asset[]) => {
+                setAssets(assets)
+                const assetsUrl = assets.map((asset: Asset) => asset.uri)
+                onFinish?.(assetsUrl)
+              }}
+            />
+          </Modal>
+        }
+      </>
+    )
+  }
   return (
     <TouchableOpacity onPress={onOpenLibrary}>
       <View
@@ -67,5 +164,33 @@ const UploadButton: React.FC<UploadButtonProps> = ({ back, onFinish, onRemove, p
     </TouchableOpacity>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingTop: Constants.statusBarHeight,
+    backgroundColor: '#ecf0f1',
+  },
+  paragraph: {
+    margin: 24,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  openBtn: {
+    width: 230,
+  },
+  imagePickerContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'white',
+    zIndex: 9,
+  },
+  cardContainer: {
+    width: 330,
+    marginTop: 20,
+  },
+})
 
 export default UploadButton
