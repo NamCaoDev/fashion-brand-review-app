@@ -25,7 +25,7 @@ export type CreateProductParams = {
   slug: string
   technology?: string
   type: string
-  brand?: any
+  brandId?: string
   status?: string
   images: string[]
 }

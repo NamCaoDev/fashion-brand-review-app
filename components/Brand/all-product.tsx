@@ -6,20 +6,22 @@ import { PlusCircleIcon, PlusIcon, StarIcon } from 'react-native-heroicons/solid
 import { Product } from 'features/product/types'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../configs/screen'
+import { Brands } from '../../features/brand/types'
 
 interface AllProductProps {
   products: Product[]
   isAdminUser: boolean
+  brand: Brands
 }
 
-const AllProduct: React.FC<AllProductProps> = ({ products, isAdminUser }) => {
+const AllProduct: React.FC<AllProductProps> = ({ products, isAdminUser, brand }) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   return (
     <View className="py-3">
       <View className="flex-row items-center mb-4">
         <Text className="font-bold text-md mr-3">Tất cả sản phẩm</Text>
         {isAdminUser && (
-          <Pressable onPress={() => navigation.navigate('CreateProduct')}>
+          <Pressable onPress={() => navigation.navigate('CreateProduct', { ...brand })}>
             <PlusCircleIcon color="#00CCBB" size={30} />
           </Pressable>
         )}

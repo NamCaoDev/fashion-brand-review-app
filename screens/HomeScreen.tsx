@@ -34,65 +34,67 @@ const HomeScreen = () => {
       ),
     })
   }, [])
+  console.log('Brands', brands)
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="px-4 py-5 w-full">
-        <View className="justify-between items-center flex-row mb-4">
-          <Text className="text-lg font-bold">All Brands</Text>
-          <TouchableOpacity>
-            <Text className="text-sm text-[#00CCBB]">View all</Text>
-          </TouchableOpacity>
-        </View>
-        <ScrollView horizontal={true}>
-          {brands?.map((brand) => (
-            <TopBrand
-              key={brand.id}
-              name={brand?.name}
-              description={brand?.description}
-              id={brand?.id}
-              socials={brand?.socials}
-              logoUrl={brand?.logoUrl}
-              establishTime={brand?.establishTime}
-              type={brand?.type}
-              bannerUrl={brand?.bannerUrl}
-              products={brand?.products}
-              addresses={brand?.addresses}
-              phoneNumber={brand?.phoneNumber}
-              slug={brand?.slug}
-            />
-          ))}
-        </ScrollView>
-        <View className="justify-between items-center flex-row mb-4 mt-5">
-          <Text className="text-lg font-bold">Top Products</Text>
-          <TouchableOpacity>
-            <Text className="text-sm text-[#00CCBB]">View all</Text>
-          </TouchableOpacity>
-        </View>
-        <FlatList
-          scrollEnabled
-          data={products}
-          renderItem={({ item }) => (
-            <TopProduct
-              key={item?.id}
-              name={item?.name}
-              details={item?.details}
-              images={item?.images}
-              material={item?.material}
-              price={item?.price}
-              type={item?.type}
-              brand={item?.brand}
-              status={item?.status}
-              slug={item?.slug}
-              colors={item?.colors}
-              technology={item?.technology}
-              id={item?.id}
-              form={item?.form}
-              rating={item?.rating}
-            ></TopProduct>
-          )}
-          keyExtractor={(item) => item.id}
-        >
-          {/* {products?.map((product) => (
+      <ScrollView>
+        <View className="px-4 py-5 w-full">
+          <View className="justify-between items-center flex-row mb-4">
+            <Text className="text-lg font-bold">All Brands</Text>
+            <TouchableOpacity>
+              <Text className="text-sm text-[#00CCBB]">View all</Text>
+            </TouchableOpacity>
+          </View>
+          <ScrollView horizontal={true}>
+            {brands?.map((brand) => (
+              <TopBrand
+                key={brand.id}
+                name={brand?.name}
+                description={brand?.description}
+                id={brand?.id}
+                socials={brand?.socials}
+                logoUrl={brand?.logoUrl}
+                establishTime={brand?.establishTime}
+                type={brand?.type}
+                bannerUrl={brand?.bannerUrl}
+                products={brand?.products}
+                addresses={brand?.addresses}
+                phoneNumber={brand?.phoneNumber}
+                slug={brand?.slug}
+              />
+            ))}
+          </ScrollView>
+          <View className="justify-between items-center flex-row mb-4 mt-5">
+            <Text className="text-lg font-bold">Top Products</Text>
+            <TouchableOpacity>
+              <Text className="text-sm text-[#00CCBB]">View all</Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            scrollEnabled
+            data={products}
+            renderItem={({ item }) => (
+              <TopProduct
+                key={item?.id}
+                name={item?.name}
+                details={item?.details}
+                images={item?.images}
+                material={item?.material}
+                price={item?.price}
+                type={item?.type}
+                brand={item?.brand}
+                status={item?.status}
+                slug={item?.slug}
+                colors={item?.colors}
+                technology={item?.technology}
+                id={item?.id}
+                form={item?.form}
+                rating={item?.rating}
+              ></TopProduct>
+            )}
+            keyExtractor={(item) => item.id}
+          >
+            {/* {products?.map((product) => (
             <TopProduct
               key={product?.id}
               name={product?.name}
@@ -110,8 +112,9 @@ const HomeScreen = () => {
               form={product?.form}
             ></TopProduct>
           ))} */}
-        </FlatList>
-      </View>
+          </FlatList>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }

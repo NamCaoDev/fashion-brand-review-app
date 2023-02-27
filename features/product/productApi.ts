@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, getDoc, setDoc } from 'firebase/firestore'
+import { collection, getDocs, doc, getDoc, setDoc, addDoc, updateDoc, FieldValue } from 'firebase/firestore'
 import { db } from '../../configs/firebase'
 import { CreateProductParams, GetProductsParams } from './types'
 
@@ -14,9 +14,21 @@ const getProducts = async (params: GetProductsParams) => {
 
 const createProduct = async (params: CreateProductParams) => {
   try {
-    const newProduct = await setDoc(doc(db, 'products', params.slug), {
+    const brandId = params.brandId
+    const brand = doc(db, 'brands', brandId as string)
+    delete params.brandId
+    const newProduct = await addDoc(collection(db, 'products'), {
       ...params,
+      brand,
     })
+    console.log('New product', newProduct)
+    // await setDoc(
+    //   doc(db, 'brands', brandId as string),
+    //   {
+    //     products: [],
+    //   },
+    //   { merge: true },
+    // )
     return Promise.resolve(newProduct)
   } catch (err) {
     return Promise.reject(err)

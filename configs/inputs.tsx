@@ -192,14 +192,6 @@ export const createProductInputs: InputParams[] = [
     placeholder: 'Enter product form',
   },
   {
-    name: 'brand',
-    type: InputType.Select,
-    label: 'Brand',
-    required: true,
-    placeholder: 'Select brand',
-    selectOptions: [],
-  },
-  {
     name: 'images',
     type: InputType.Upload,
     label: 'Images',

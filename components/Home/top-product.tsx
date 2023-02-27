@@ -59,7 +59,7 @@ const TopProduct: React.FC<TopProductProps> = ({
         })
       }
     >
-      <View className="bg-gray-200 rounded-lg w-50 h-48 flex-row w-full shadow-md">
+      <View className="bg-gray-200 rounded-lg w-50 h-48 flex-row w-full shadow-md mb-4">
         <Image
           source={{
             uri: images[3],
@@ -67,7 +67,7 @@ const TopProduct: React.FC<TopProductProps> = ({
           className="w-48 h-full rounded-md"
         />
         <View className="flex-1 px-4 py-2">
-          <Text className="text-lg font-bold mb-2">{name}</Text>
+          <Text className="text-lg font-bold mb-2 h-[54px]">{name?.slice(0, 20).concat('...')}</Text>
           <Text className="text-sm mb-2">
             Price:
             <Text className="text-gray-700">

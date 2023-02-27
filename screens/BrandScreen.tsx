@@ -46,9 +46,10 @@ const BrandScreen = () => {
   const userAuth = useAppSelector(selectUserAuth)
   const isAdminUser = userAuth?.role === 'admin' && user
 
+  console.log('products', products)
+
   const getAllProductData = async () => {
-    const productsAction = products?.map((product: any) => getDoc(product))
-    const results = await Promise.all(productsAction)
+    const results = await Promise.all(products?.map((product: any) => getDoc(product)))
     const resultsData: Product[] = results?.map((r) => r.data())
     setProductsData(cloneDeep(resultsData))
   }
@@ -117,7 +118,23 @@ const BrandScreen = () => {
           </View>
           <Text className="py-4 text-gray-700">{description}</Text>
           <DetailsBrand />
-          <AllProduct products={productsData} isAdminUser />
+          <AllProduct
+            products={productsData}
+            isAdminUser
+            brand={{
+              id,
+              name,
+              description,
+              bannerUrl,
+              logoUrl,
+              establishTime,
+              type,
+              addresses,
+              phoneNumber,
+              slug,
+              socials,
+            }}
+          />
         </View>
         <DeleteBrandModal brandId={id} visible={showDeleteModal} onClose={() => setShowDeleteModal(false)} />
       </ScrollView>

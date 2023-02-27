@@ -1,4 +1,4 @@
-import { collection, doc, getDocs, setDoc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { collection, doc, getDocs, setDoc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore'
 import { cloneDeep } from 'lodash'
 import { db } from '../../configs/firebase'
 import { CreateBrandParams, GetBrandsParams, UpdateBrandParams } from './types'
@@ -15,7 +15,7 @@ const getBrands = async (params: GetBrandsParams) => {
 
 const createBrand = async (params: CreateBrandParams) => {
   try {
-    const newBrand = await setDoc(doc(db, 'brands', params.slug), {
+    const newBrand = await addDoc(collection(db, 'brands'), {
       ...params,
     })
     return Promise.resolve(newBrand)

@@ -2,7 +2,6 @@ import { View, SafeAreaView, ScrollView, Alert, Text, TextInput, Image } from 'r
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { RouteProp, useRoute } from '@react-navigation/native'
-import { db } from '../configs/firebase'
 
 import LoadingButton from '../components/Common/loading-button'
 import useInputs from '../hooks/useInputs'
@@ -14,9 +13,8 @@ import { convertImageUrlToBlob } from '../configs/image'
 import uploadThunkActions from '../features/upload/uploadAction'
 import productThunkActions from '../features/product/productAction'
 import { Brands } from '../features/brand/types'
-import { doc } from 'firebase/firestore'
 
-const CreateProductScreen = () => {
+const UpdateProductScreen = () => {
   const form = useForm<CreateProductParams>()
   const { handleSubmit } = form
   const { renderInputs } = useInputs({ form })
@@ -91,4 +89,4 @@ const CreateProductScreen = () => {
   )
 }
 
-export default CreateProductScreen
+export default UpdateProductScreen
