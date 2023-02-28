@@ -155,6 +155,7 @@ const useInputs = ({ form }: UseInputsProps) => {
                 placeholder={uploadOptions?.defaultImageSrc}
                 onRemove={() => setValue(name, null)}
                 multiple={uploadOptions?.multiple}
+                placeholderMul={uploadOptions?.placeholderMul}
               />
             )}
             {isInputGroup && renderInputs({ inputs: cloneDeep(groups) as InputParams[], level: 1 })}

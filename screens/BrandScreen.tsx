@@ -1,6 +1,15 @@
-import { View, Text, SafeAreaView, Image, ScrollView, useWindowDimensions, TouchableOpacity } from 'react-native'
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  ScrollView,
+  useWindowDimensions,
+  TouchableOpacity,
+  Platform,
+} from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import { RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { TrashIcon } from 'react-native-heroicons/solid'
 
@@ -41,6 +50,7 @@ const BrandScreen = () => {
 
   const [productsData, setProductsData] = useState<Product[]>([])
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const isFocused = useIsFocused()
   const authData = useAppSelector(selectAuthData)
   const user = getAuth()?.currentUser || authData?.authInfo
   const userAuth = useAppSelector(selectUserAuth)
@@ -50,7 +60,10 @@ const BrandScreen = () => {
 
   const getAllProductData = async () => {
     const results = await Promise.all(products?.map((product: any) => getDoc(product)))
-    const resultsData: Product[] = results?.map((r) => r.data())
+    const resultsData: Product[] = results?.map((r) => {
+      return { ...r.data(), id: r.id }
+    })
+    console.log('Result data', resultsData[0].id)
     setProductsData(cloneDeep(resultsData))
   }
 
@@ -61,11 +74,13 @@ const BrandScreen = () => {
   }, [])
 
   useEffect(() => {
-    getAllProductData()
-  }, [])
+    if (isFocused) {
+      getAllProductData()
+    }
+  }, [isFocused])
 
   return (
-    <SafeAreaView className="relative flex-1">
+    <SafeAreaView className={`${Platform.OS === 'android' ? 'mt-9' : 'mt-0'} relative flex-1`}>
       <ScrollView className="flex-1">
         <GoBack />
         <View className="relative h-64 mb-3">

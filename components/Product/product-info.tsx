@@ -1,9 +1,9 @@
-import { View, Text, Image } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, Image, Pressable } from 'react-native'
+import React, { useCallback, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import Currency from 'react-currency-formatter'
 import { HeartIcon as HeartOutlinedIcon } from 'react-native-heroicons/outline'
-import { HeartIcon, StarIcon } from 'react-native-heroicons/solid'
+import { HeartIcon, StarIcon, PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid'
 
 import { Brands } from 'features/brand/types'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -18,9 +18,33 @@ interface ProductInfoProps {
   colors: string[]
   type: string
   status: string
+  id: string
+  form: string
+  slug: string
+  material: string[]
+  details: string[]
+  images: string[]
+  isAdminUser: boolean
+  technology: string
 }
 
-const ProductInfo: React.FC<ProductInfoProps> = ({ brandData, name, price, rating, colors, type, status }) => {
+const ProductInfo: React.FC<ProductInfoProps> = ({
+  brandData,
+  name,
+  price,
+  rating,
+  colors,
+  type,
+  status,
+  isAdminUser,
+  id,
+  form,
+  slug,
+  material,
+  details,
+  images,
+  technology,
+}) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   const [liked, setLiked] = useState(false)
   const cloneBrandData = { ...brandData } as Brands
@@ -30,11 +54,52 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ brandData, name, price, ratin
     }
     return <HeartOutlinedIcon color="red" onPress={() => setLiked(true)} />
   }
+  const productDataRoute = {
+    name,
+    price,
+    rating,
+    colors,
+    type,
+    status,
+    isAdminUser,
+    id,
+    form,
+    slug,
+    material,
+    details,
+    images,
+    technology,
+  }
+  const renderProductActionIcon = useCallback(() => {
+    if (!isAdminUser) {
+      return null
+    }
+    return (
+      <View className="flex-row space-x-2">
+        <Pressable
+          onPress={() => {
+            navigation.navigate('UpdateProduct', {
+              brand: cloneBrandData,
+              product: productDataRoute,
+            })
+          }}
+        >
+          <PencilSquareIcon color="#00CCBB" />
+        </Pressable>
+        <Pressable>
+          <TrashIcon color="#cd201f" />
+        </Pressable>
+      </View>
+    )
+  }, [isAdminUser])
   return (
     <View className="w-full">
       <View className="flex-row items-center justify-between mb-3">
         <Text className="font-bold text-xl">{name}</Text>
-        {renderHeart()}
+        <View className="flex-row space-x-2">
+          {renderProductActionIcon()}
+          {renderHeart()}
+        </View>
       </View>
       <View className="mb-3 flex-row items-center">
         <Text className="text-gray-700 text-lg mr-4">
@@ -59,14 +124,22 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ brandData, name, price, ratin
         <Text>{brandData?.type === 'local_brand' ? 'Local Brand' : 'Global Brand'}</Text>
       </View>
       <View className="flex-row items-center mb-3">
+        <Text className="text-gray-700 text-md mr-2">Id - </Text>
+        <Text>{id}</Text>
+      </View>
+      <View className="flex-row items-center mb-3">
         <Text className="text-gray-700 text-md mr-2">Colors - </Text>
         {colors?.map((color: any) => (
           <Text className="capitalize">{color},&nbsp;</Text>
         ))}
       </View>
-      <View className="flex-row items-center">
+      <View className="flex-row items-center mb-3">
         <Text className="text-gray-700 text-md mr-2">Category type - </Text>
         <Text>{type}</Text>
+      </View>
+      <View className="flex-row items-center">
+        <Text className="text-gray-700 text-md mr-2">Technology - </Text>
+        <Text>{technology}</Text>
       </View>
     </View>
   )

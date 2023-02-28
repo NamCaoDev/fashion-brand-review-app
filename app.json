@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "fashion-brand-review",
+    "name": "Fashion Brand Review",
     "slug": "fashion-brand-review",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -36,7 +36,8 @@
         "backgroundColor": "#FFFFFF"
       },
       "blockedPermissions": ["android.permission.RECORD_AUDIO"],
-      "package": "com.namcao2610.fashionbrandreview"
+      "package": "com.namcao2610.fashionbrandreview",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"

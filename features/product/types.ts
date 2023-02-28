@@ -30,4 +30,22 @@ export type CreateProductParams = {
   images: string[]
 }
 
+export type UpdateProductParams = {
+  id: string
+  data: {
+    name?: string
+    colors?: string[]
+    details?: string[]
+    material?: string[]
+    form?: string
+    price?: number
+    slug?: string
+    technology?: string
+    type?: string
+    brandId?: string
+    status?: string
+    images?: string[]
+  }
+}
+
 export interface GetProductsParams {}

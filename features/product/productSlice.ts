@@ -17,6 +17,11 @@ interface ProductState {
     success: boolean
     error: string
   }
+  updateProduct: {
+    loading: boolean
+    success: boolean
+    error: string
+  }
 }
 
 // Define the initial state using that type
@@ -27,6 +32,11 @@ const initialState: ProductState = {
     error: '',
   },
   createProduct: {
+    loading: false,
+    success: false,
+    error: '',
+  },
+  updateProduct: {
     loading: false,
     success: false,
     error: '',
@@ -67,6 +77,21 @@ export const productSlice = createSlice({
       state.createProduct.loading = false
       state.createProduct.error = action.payload?.message as string
     })
+
+    // Update product
+    builder.addCase(productThunkActions.updateProduct.pending, (state) => {
+      state.updateProduct.loading = true
+    })
+
+    builder.addCase(productThunkActions.updateProduct.fulfilled, (state, action) => {
+      state.updateProduct.loading = false
+      state.updateProduct.success = true
+    })
+
+    builder.addCase(productThunkActions.updateProduct.rejected, (state, action) => {
+      state.updateProduct.loading = false
+      state.updateProduct.error = action.payload?.message as string
+    })
   },
 })
 
@@ -75,5 +100,6 @@ export const brandAction = productSlice.actions
 // Other code such as selectors can use the imported `RootState` type
 export const selectProducts = (state: RootState) => state.product.getProducts.data
 export const selectCreateProductLoading = (state: RootState) => state.product.createProduct.loading
+export const selectUpdateProductLoading = (state: RootState) => state.product.updateProduct.loading
 
 export default productSlice.reducer

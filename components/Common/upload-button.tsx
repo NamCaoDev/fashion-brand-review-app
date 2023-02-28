@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, Image, Pressable, StyleSheet, Modal, FlatList } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Constants from 'expo-constants'
 import * as ImagePicker from 'expo-image-picker'
 import { ImagePicker as ImagePickerMultiple, Asset } from 'expo-image-multiple-picker'
@@ -12,6 +12,7 @@ interface UploadButtonProps {
   placeholder?: string
   isAvatar?: boolean
   multiple?: boolean
+  placeholderMul?: string[]
 }
 
 const ImagePickerContainer = ({
@@ -37,11 +38,20 @@ const ImagePickerContainer = ({
   )
 }
 
-const UploadButton: React.FC<UploadButtonProps> = ({ back, onFinish, onRemove, placeholder, isAvatar, multiple }) => {
+const UploadButton: React.FC<UploadButtonProps> = ({
+  back,
+  onFinish,
+  onRemove,
+  placeholder,
+  isAvatar,
+  multiple,
+  placeholderMul,
+}) => {
   const [openMultiple, setOpenMultiple] = useState(false)
   const [assets, setAssets] = useState<ImagePicker.ImagePickerAsset[]>(
     placeholder ? [{ uri: placeholder, width: 200, height: 200 }] : [],
   )
+  const [defaultImages, setDefaultImages] = useState<string[]>([])
   const onOpenLibrary = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -60,10 +70,16 @@ const UploadButton: React.FC<UploadButtonProps> = ({ back, onFinish, onRemove, p
   const heightImage = isAvatar ? 150 : 200
   const widthImage = isAvatar ? 200 : 200
 
+  useEffect(() => {
+    if (placeholderMul?.length) {
+      setDefaultImages([...placeholderMul])
+    }
+  }, [placeholderMul])
+
   if (multiple) {
     return (
       <>
-        {assets?.length || placeholder ? (
+        {assets?.length || defaultImages?.length ? (
           <View>
             <View className="flex-row justify-end mb-4">
               <Pressable
@@ -71,38 +87,49 @@ const UploadButton: React.FC<UploadButtonProps> = ({ back, onFinish, onRemove, p
                 onPress={() => {
                   setAssets([])
                   onRemove?.()
+                  setDefaultImages([])
                 }}
               >
                 <Text className="text-white text-center">Remove all images</Text>
               </Pressable>
             </View>
-
-            <FlatList
-              data={assets}
-              scrollEnabled
-              numColumns={2}
-              horizontal={false}
-              keyExtractor={(item) => item.assetId as string}
-              renderItem={({ item }) => (
-                <Image
-                  style={{ width: 150, height: 150, maxWidth: '100%' }}
-                  source={{ uri: item.uri || placeholder }}
-                  resizeMode="cover"
-                  className={isAvatar ? 'rounded-full mr-2 mb-3 shadow-sm' : 'rounded-md mr-2 mb-3 shadow-sm'}
-                />
-              )}
-            ></FlatList>
-
-            {/* {assets?.map((asset) => (
-              <View className="flex-row">
-                <Image
-                  style={{ width: 150, height: 150, maxWidth: '100%' }}
-                  source={{ uri: asset.uri || placeholder }}
-                  resizeMode="cover"
-                  className={isAvatar ? 'rounded-full mr-2 mb-2 shadow-sm' : 'rounded-md mr-2 mb-2 shadow-sm'}
-                />
-              </View>
-            ))} */}
+            {defaultImages?.length ? (
+              <>
+                <FlatList
+                  data={defaultImages}
+                  scrollEnabled
+                  numColumns={2}
+                  horizontal={false}
+                  keyExtractor={(item) => item as string}
+                  renderItem={({ item }) => (
+                    <Image
+                      style={{ width: 150, height: 150, maxWidth: '100%' }}
+                      source={{ uri: item }}
+                      resizeMode="cover"
+                      className={isAvatar ? 'rounded-full mr-2 mb-3 shadow-sm' : 'rounded-md mr-2 mb-3 shadow-sm'}
+                    />
+                  )}
+                ></FlatList>
+              </>
+            ) : (
+              <>
+                <FlatList
+                  data={assets}
+                  scrollEnabled
+                  numColumns={2}
+                  horizontal={false}
+                  keyExtractor={(item) => item.assetId as string}
+                  renderItem={({ item }) => (
+                    <Image
+                      style={{ width: 150, height: 150, maxWidth: '100%' }}
+                      source={{ uri: item.uri }}
+                      resizeMode="cover"
+                      className={isAvatar ? 'rounded-full mr-2 mb-3 shadow-sm' : 'rounded-md mr-2 mb-3 shadow-sm'}
+                    />
+                  )}
+                ></FlatList>
+              </>
+            )}
           </View>
         ) : (
           <Pressable

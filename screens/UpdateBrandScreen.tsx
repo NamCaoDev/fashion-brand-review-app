@@ -32,7 +32,6 @@ const UpdateBrandScreen: React.FC<UpdateBrandScreenProps> = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   const isLoadingUpdateBrand = useAppSelector(selectUpdateBrandLoading)
   const disabledButton = isLoadingUpdateBrand || !watch('name')
-  console.log('Disblaed button', disabledButton)
   const updateBrandInputs = createBrandInputs?.map((input) => {
     if (['logoUrl', 'bannerUrl']?.includes(input.name)) {
       return {

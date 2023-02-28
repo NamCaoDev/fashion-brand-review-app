@@ -1,6 +1,6 @@
-import { collection, getDocs, doc, getDoc, setDoc, addDoc, updateDoc, FieldValue } from 'firebase/firestore'
+import { collection, getDocs, doc, getDoc, setDoc, addDoc, arrayUnion, updateDoc } from 'firebase/firestore'
 import { db } from '../../configs/firebase'
-import { CreateProductParams, GetProductsParams } from './types'
+import { CreateProductParams, GetProductsParams, UpdateProductParams } from './types'
 
 const getProducts = async (params: GetProductsParams) => {
   try {
@@ -21,15 +21,24 @@ const createProduct = async (params: CreateProductParams) => {
       ...params,
       brand,
     })
-    console.log('New product', newProduct)
-    // await setDoc(
-    //   doc(db, 'brands', brandId as string),
-    //   {
-    //     products: [],
-    //   },
-    //   { merge: true },
-    // )
+    await setDoc(
+      doc(db, 'brands', brandId as string),
+      {
+        products: arrayUnion(doc(db, 'products', newProduct.id)),
+      },
+      { merge: true },
+    )
     return Promise.resolve(newProduct)
+  } catch (err) {
+    return Promise.reject(err)
+  }
+}
+
+const updateProduct = async (params: UpdateProductParams) => {
+  const { id, data } = params
+  try {
+    const brandUpdate = await updateDoc(doc(db, 'products', id), data)
+    return Promise.resolve(brandUpdate)
   } catch (err) {
     return Promise.reject(err)
   }
@@ -38,6 +47,7 @@ const createProduct = async (params: CreateProductParams) => {
 const productAPI = {
   getProducts,
   createProduct,
+  updateProduct,
 }
 
 export default productAPI

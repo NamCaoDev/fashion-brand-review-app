@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, Image, FlatList, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, SafeAreaView, Image, FlatList, ScrollView, TouchableOpacity, Platform } from 'react-native'
 import React, { useEffect } from 'react'
 import { useNavigation, useIsFocused } from '@react-navigation/native'
 import { useAppDispatch, useAppSelector } from '../store'
@@ -9,6 +9,7 @@ import productThunkActions from '../features/product/productAction'
 import TopBrand from '../components/Home/top-brand'
 import { selectProducts } from '../features/product/productSlice'
 import TopProduct from '../components/Home/top-product'
+import { Brands } from '../features/brand/types'
 
 const HomeScreen = () => {
   const navigation = useNavigation()
@@ -27,7 +28,12 @@ const HomeScreen = () => {
   useEffect(() => {
     navigation.setOptions({
       header: () => (
-        <SafeAreaView className={`flex-row items-center space-x-2 w-full bg-gray-500`} style={{ height: 120 }}>
+        <SafeAreaView
+          className={`${
+            Platform.OS === 'android' ? 'mt-9' : 'mt-0'
+          } flex-row items-center space-x-2 w-full bg-gray-500`}
+          style={{ height: Platform.OS === 'android' ? 100 : 120 }}
+        >
           <Image source={require('../assets/logo.jpeg')} className="w-10 h-10 rounded-full ml-3" />
           <Text className="font-bold text-white text-lg">Fashion Brand Review</Text>
         </SafeAreaView>
@@ -37,7 +43,7 @@ const HomeScreen = () => {
   console.log('Brands', brands)
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <ScrollView>
+      <ScrollView scrollEnabled>
         <View className="px-4 py-5 w-full">
           <View className="justify-between items-center flex-row mb-4">
             <Text className="text-lg font-bold">All Brands</Text>
@@ -45,8 +51,8 @@ const HomeScreen = () => {
               <Text className="text-sm text-[#00CCBB]">View all</Text>
             </TouchableOpacity>
           </View>
-          <ScrollView horizontal={true}>
-            {brands?.map((brand) => (
+          <ScrollView horizontal={true} scrollEnabled>
+            {brands?.map((brand: Brands) => (
               <TopBrand
                 key={brand.id}
                 name={brand?.name}

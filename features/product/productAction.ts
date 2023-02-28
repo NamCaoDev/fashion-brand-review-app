@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { APIError } from '../types'
 import productAPI from './productApi'
-import { Product, GetProductsParams, CreateProductParams } from './types'
+import { Product, GetProductsParams, CreateProductParams, UpdateProductParams } from './types'
 
 // Get Products
 const getProducts = createAsyncThunk<Product[], GetProductsParams, { rejectValue: APIError }>(
@@ -29,9 +29,23 @@ const createProduct = createAsyncThunk<any, CreateProductParams, { rejectValue: 
   },
 )
 
+// Update Product
+const updateProduct = createAsyncThunk<any, UpdateProductParams, { rejectValue: APIError }>(
+  'products/update-product',
+  async (params, { rejectWithValue }) => {
+    try {
+      return await productAPI.updateProduct(params)
+    } catch (err) {
+      const error = err as APIError
+      return rejectWithValue(error)
+    }
+  },
+)
+
 const productThunkActions = {
   getProducts,
   createProduct,
+  updateProduct,
 }
 
 export default productThunkActions

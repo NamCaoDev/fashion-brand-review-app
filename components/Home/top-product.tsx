@@ -48,7 +48,7 @@ const TopProduct: React.FC<TopProductProps> = ({
           material,
           price,
           type,
-          brand,
+          brand: cloneBrandData,
           status,
           slug,
           colors,

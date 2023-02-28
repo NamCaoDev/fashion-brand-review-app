@@ -27,15 +27,16 @@ const AllProduct: React.FC<AllProductProps> = ({ products, isAdminUser, brand })
         )}
       </View>
       <FlatList
+        contentContainerStyle={{ marginBottom: 10 }}
         data={products}
         scrollEnabled
         numColumns={2}
         horizontal={false}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <>
-            <TouchableOpacity onPress={() => navigation.navigate('Product', item)}>
-              <View key={item?.id} className="bg-white rounded-md shadow-sm w-48">
+          <View className="w-[48%] mr-3 mb-3">
+            <TouchableOpacity onPress={() => navigation.navigate('Product', { ...item, brand })}>
+              <View key={item?.id} className="bg-white rounded-md shadow-sm w-full">
                 <Image
                   source={{
                     uri: item?.images[0],
@@ -58,7 +59,7 @@ const AllProduct: React.FC<AllProductProps> = ({ products, isAdminUser, brand })
                 </View>
               </View>
             </TouchableOpacity>
-          </>
+          </View>
         )}
       ></FlatList>
     </View>

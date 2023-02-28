@@ -15,6 +15,7 @@ import SignUpScreen from './SignUpScreen'
 import CreateBrandScreen from './CreateBrandScreen'
 import UpdateBrandScreen from './UpdateBrandScreen'
 import CreateProductScreen from './CreateProductScreen'
+import UpdateProductScreen from './UpdateProductScreen'
 import userThunkActions from '../features/user/userAction'
 import { useAppDispatch, useAppSelector } from '../store'
 import { selectAuthData } from '../features/auth/authSlice'
@@ -32,6 +33,7 @@ const HomeStackScreen = () => {
       <Stack.Screen component={CreateBrandScreen} name="CreateBrand" options={{ headerTitle: 'Create New Brand' }} />
       <Stack.Screen component={UpdateBrandScreen} name="UpdateBrand" options={{ headerTitle: 'Update Brand' }} />
       <Stack.Screen component={CreateProductScreen} name="CreateProduct" options={{ headerTitle: 'Create Product' }} />
+      <Stack.Screen component={UpdateProductScreen} name="UpdateProduct" options={{ headerTitle: 'Update Product' }} />
     </Stack.Navigator>
   )
 }
@@ -45,6 +47,7 @@ const ProfileStackScreen = () => {
       <Stack.Screen component={CreateBrandScreen} name="CreateBrand" options={{ headerTitle: 'Create New Brand' }} />
       <Stack.Screen component={UpdateBrandScreen} name="UpdateBrand" options={{ headerTitle: 'Update Brand' }} />
       <Stack.Screen component={CreateProductScreen} name="CreateProduct" options={{ headerTitle: 'Create Product' }} />
+      <Stack.Screen component={UpdateProductScreen} name="UpdateProduct" options={{ headerTitle: 'Update Product' }} />
     </Stack.Navigator>
   )
 }

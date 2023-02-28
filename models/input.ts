@@ -33,5 +33,6 @@ export interface InputParams {
     isAvatar?: boolean
     defaultImageSrc?: string
     multiple?: boolean
+    placeholderMul?: string[]
   }
 }
